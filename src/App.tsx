@@ -1,25 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// import './App.css';
+import { useAppDispatch } from './store/hooks';
+import { getCategories, getManufacturers } from './store/Static/static.asyncActions';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { SearchParamKeys, SearchParams } from './types';
+
+import Layout from './layout';
 
 function App() {
+  const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const mans: string[] = [];
+    const cats: number[] = [];
+    const params = Object.fromEntries(searchParams.entries())  as unknown as SearchParams
+    if (params[SearchParamKeys.Mans]) {
+      const res = params[SearchParamKeys.Mans].split('-');
+      for (let i = 0; i < res.length; i++) {
+        let details = res[i].split('.')
+        mans.push(details[0])
+      }
+    }
+    if (params[SearchParamKeys.Cats]) {
+      const res = params[SearchParamKeys.Cats].split('.');
+      for (let i = 0; i < res.length; i++) {
+        cats.push(+res[i])
+      }
+    }
+    dispatch(getManufacturers(mans))
+    dispatch(getCategories(cats))
+  }, [dispatch, searchParams])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout />
   );
 }
 

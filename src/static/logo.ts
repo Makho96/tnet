@@ -1,0 +1,1 @@
+export {ReactComponent as LogoSVG} from '../assets/images/logo/logo.svg';
